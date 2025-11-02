@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 
 export default function Contact() {
@@ -8,31 +8,6 @@ export default function Contact() {
   const y = useMotionValue(0)
   const springX = useSpring(x, { stiffness: 300, damping: 20 })
   const springY = useSpring(y, { stiffness: 300, damping: 20 })
-
-  useEffect(() => {
-    let ctx
-    ;(async () => {
-      try {
-        const gsap = (await import('gsap')).default
-        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
-        gsap.registerPlugin(ScrollTrigger)
-        ctx = gsap.context(() => {
-          gsap.fromTo(
-            sectionRef.current?.querySelector('.contact-card'),
-            { autoAlpha: 0, y: 20 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.9,
-              ease: 'power3.out',
-              scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' },
-            }
-          )
-        }, sectionRef)
-      } catch (e) {}
-    })()
-    return () => ctx && ctx.revert()
-  }, [])
 
   const onMouseMove = (e) => {
     const rect = btnRef.current.getBoundingClientRect()
@@ -52,11 +27,16 @@ export default function Contact() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(600px_circle_at_50%_120%,rgba(56,189,248,0.12),transparent_60%)]" />
 
       <div className="relative z-10 mx-auto max-w-4xl">
-        <div className="contact-card overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur md:p-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur md:p-10"
+        >
           <h2 className="text-3xl font-semibold md:text-4xl">Let’s build something memorable</h2>
           <p className="mt-3 max-w-2xl text-white/70">
-            I’m open to freelance, collaborations, and full-time roles. Tell me about your idea and
-            I’ll get back soon.
+            I’m open to freelance, collaborations, and full-time roles. Tell me about your idea and I’ll get back soon.
           </p>
 
           <form
@@ -114,25 +94,33 @@ export default function Contact() {
                   <path d="M22 2L11 13" />
                   <path d="M22 2l-7 20-4-9-9-4 20-7z" />
                 </svg>
-                <span className="pointer-events-none absolute inset-0 opacity-0 blur transition-opacity duration-300 md:group-hover:opacity-100"
-                  style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.15), transparent 30%, transparent 70%, rgba(255,255,255,0.15))' }}
+                <span
+                  className="pointer-events-none absolute inset-0 opacity-0 blur transition-opacity duration-300 md:group-hover:opacity-100"
+                  style={{
+                    background:
+                      'linear-gradient(90deg, rgba(255,255,255,0.15), transparent 30%, transparent 70%, rgba(255,255,255,0.15))',
+                  }}
                 />
               </motion.button>
             </div>
           </form>
 
           <div className="mt-10 flex items-center gap-4 text-white/60">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-white">GitHub</a>
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-white">
+              GitHub
+            </a>
             <span className="h-1 w-1 rounded-full bg-white/20" />
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-white">LinkedIn</a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-white">
+              LinkedIn
+            </a>
             <span className="h-1 w-1 rounded-full bg-white/20" />
-            <a href="mailto:hello@example.com" className="hover:text-white">Email</a>
+            <a href="mailto:hello@example.com" className="hover:text-white">
+              Email
+            </a>
           </div>
-        </div>
+        </motion.div>
 
-        <p className="mt-10 text-center text-xs text-white/50">
-          © {new Date().getFullYear()} Rohan Kumar — Crafted with React, GSAP & Three.
-        </p>
+        <p className="mt-10 text-center text-xs text-white/50">© {new Date().getFullYear()} Rohan Kumar — Crafted with React, Motion & Three.</p>
       </div>
     </section>
   )

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Spline from '@splinetool/react-spline'
 import { motion } from 'framer-motion'
 
@@ -9,42 +9,7 @@ const scrollToId = (id) => {
 
 export default function Hero3D() {
   const containerRef = useRef(null)
-  const overlayRef = useRef(null)
   const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    let ctx
-    ;(async () => {
-      try {
-        const gsap = (await import('gsap')).default
-        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
-        gsap.registerPlugin(ScrollTrigger)
-
-        ctx = gsap.context(() => {
-          gsap.fromTo(
-            overlayRef.current,
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', delay: 0.2 }
-          )
-
-          // Parallax overlay on scroll
-          gsap.to(overlayRef.current, {
-            yPercent: -10,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true,
-            },
-          })
-        }, containerRef)
-      } catch (e) {
-        // GSAP optional
-      }
-    })()
-    return () => ctx && ctx.revert()
-  }, [])
 
   return (
     <section
@@ -65,10 +30,7 @@ export default function Hero3D() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(56,189,248,0.18),transparent_40%),radial-gradient(circle_at_70%_80%,rgba(168,85,247,0.15),transparent_45%)]" />
 
       {/* Content Overlay */}
-      <div
-        ref={overlayRef}
-        className="relative z-10 mx-auto flex h-[100svh] max-w-7xl flex-col items-center justify-center px-6 text-center"
-      >
+      <div className="relative z-10 mx-auto flex h-[100svh] max-w-7xl flex-col items-center justify-center px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 10 }}

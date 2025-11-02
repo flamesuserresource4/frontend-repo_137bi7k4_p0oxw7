@@ -64,39 +64,6 @@ function ProjectCard({ project }) {
 export default function Projects() {
   const sectionRef = useRef(null)
 
-  useEffect(() => {
-    let ctx
-    ;(async () => {
-      try {
-        const gsap = (await import('gsap')).default
-        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
-        gsap.registerPlugin(ScrollTrigger)
-        ctx = gsap.context(() => {
-          const items = sectionRef.current?.querySelectorAll('[data-card]')
-          if (items && items.length) {
-            items.forEach((el, i) => {
-              gsap.fromTo(
-                el,
-                { autoAlpha: 0, y: 30 },
-                {
-                  autoAlpha: 1,
-                  y: 0,
-                  duration: 0.9,
-                  ease: 'power3.out',
-                  scrollTrigger: {
-                    trigger: el,
-                    start: 'top 85%',
-                  },
-                }
-              )
-            })
-          }
-        }, sectionRef)
-      } catch (e) {}
-    })()
-    return () => ctx && ctx.revert()
-  }, [])
-
   // gradient cursor light for cards
   useEffect(() => {
     const grid = sectionRef.current?.querySelector('[data-grid]')
@@ -115,19 +82,32 @@ export default function Projects() {
   return (
     <section id="projects" ref={sectionRef} className="relative bg-[#0d0d0d] px-6 py-24 text-white md:py-32">
       <div className="relative z-10 mx-auto max-w-6xl">
-        <div className="mb-10">
+        <motion.div
+          initial={{ y: 24, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="mb-10"
+        >
           <p className="text-sm tracking-widest text-teal-300/80">PROJECTS</p>
           <h2 className="mt-2 text-3xl font-semibold md:text-4xl">Selected Work</h2>
           <p className="mt-3 max-w-2xl text-white/70">
             A mix of client work, experiments, and explorations in real-time graphics and UX.
           </p>
-        </div>
+        </motion.div>
 
         <div data-grid className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {projects.map((p) => (
-            <div key={p.id} data-card>
+          {projects.map((p, i) => (
+            <motion.div
+              key={p.id}
+              initial={{ y: 24, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.7, ease: 'easeOut', delay: 0.06 * i }}
+              data-card
+            >
               <ProjectCard project={p} />
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
